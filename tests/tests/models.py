@@ -7,7 +7,7 @@ class SimpleModel(VersionedMixin, models.Model):
     version = VersionField()
     name = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -37,8 +37,8 @@ class CounterModel(VersionedMixin, models.Model):
     version = VersionField()
     count = models.PositiveIntegerField(default=0)
 
-    def __unicode__(self):
-        return unicode(self.count)
+    def __str__(self):
+        return str(self.count)
 
 
 class AbstractModel(VersionedMixin, models.Model):
