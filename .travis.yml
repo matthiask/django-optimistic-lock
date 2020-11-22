@@ -1,33 +1,48 @@
 sudo: false
 language: python
 python:
-    - "2.7"
-    - "3.4"
-    - "3.5"
-    - "3.6"
-env:
-  - DB=sqlite DJANGO_PACKAGE=Django~=1.11
-  - DB=postgres DJANGO_PACKAGE=Django~=1.11
-  - DB=sqlite DJANGO_PACKAGE=Django~=2.0
-  - DB=postgres DJANGO_PACKAGE=Django~=2.0
-  - DB=postgres DJANGO_PACKAGE='--pre Django>2.0,<2.2'
-  - DB=sqlite DJANGO_PACKAGE='--pre Django>2.0,<2.2'
+  - 3.8
+services:
+  - postgresql
 matrix:
-  exclude:
-    - python: "2.7"
-      env: DB=sqlite DJANGO_PACKAGE=Django~=2.0
-    - python: "2.7"
-      env: DB=postgres DJANGO_PACKAGE=Django~=2.0
-    - python: "2.7"
-      env: DB=postgres DJANGO_PACKAGE='--pre Django>2.0,<2.2'
-    - python: "2.7"
-      env: DB=sqlite DJANGO_PACKAGE='--pre Django>2.0,<2.2'
-    - python: "3.4"
-      env: DB=postgres DJANGO_PACKAGE='--pre Django>2.0,<2.2'
-    - python: "3.4"
-      env: DB=sqlite DJANGO_PACKAGE='--pre Django>2.0,<2.2'
-install: 'pip install $DJANGO_PACKAGE && pip install .'
+  fast_finish: true
+  include:
+    - python: 3.8
+      env: REQ="Django>=3.1,<3.2" DB=sqlite
+    - python: 3.8
+      env: REQ="Django>=3.1,<3.2" DB=postgres
+    - python: 3.7
+      env: REQ="Django>=3.1,<3.2" DB=sqlite
+    - python: 3.6
+      env: REQ="Django>=3.1,<3.2" DB=sqlite
+    - python: 3.8
+      env: REQ="Django>=3.0,<3.1" DB=sqlite
+    - python: 3.7
+      env: REQ="Django>=3.0,<3.1" DB=sqlite
+    - python: 3.6
+      env: REQ="Django>=3.0,<3.1" DB=sqlite
+    - python: 3.7
+      env: REQ="Django>=2.2,<3.0" DB=sqlite
+    - python: 3.7
+      env: REQ="Django>=2.2,<3.0" DB=postgres
+    - python: 3.6
+      env: REQ="Django>=2.2,<3.0" DB=sqlite
+    - python: 3.5
+      env: REQ="Django>=2.2,<3.0" DB=sqlite
+    - python: 3.7
+      env: REQ="Django>=2.1,<2.2" DB=sqlite
+    - python: 3.7
+      env: REQ="Django>=2.0,<2.1" DB=sqlite
+    - python: 3.7
+      env: REQ="Django>=1.11,<2.0" DB=sqlite
+    - python: 3.6
+      env: REQ="Django>=1.11,<2.0" DB=sqlite
+    - python: 3.5
+      env: REQ="Django>=1.11,<2.0" DB=sqlite
+    - python: 2.7
+      env: REQ="Django>=1.11,<2.0" DB=sqlite
+install: 'pip install $REQ && pip install .'
 script: make test SETTINGS=tests.travis_settings
 before_script:
   - psql -c 'create database test_ool;' -U postgres
-  - pip install psycopg2-binary 
+  - pip install psycopg2-binary
